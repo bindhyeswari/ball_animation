@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+
+        .container {
+            position: relative;
+            height: 50vh;
+            width: 60vw;
+            border: 1px solid gray;
+            margin: 20vh auto 30vh;
+        }
+
+        .bar {
+            background-color: #aaa;
+            height: 15px;
+            width: 60px;
+
+            position: absolute;
+            left: 0;
+            bottom: 0;
+        }
+
+        .ball {
+            height: 25px;
+            width: 25px;
+            background-color: #aaa;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.querySelector('.container');
+            var bar_element = document.querySelector('.bar');
+            var ball_element = document.querySelector('.ball');
+            var bounds = {
+                left: 0,
+                right: container.clientWidth,
+                bottom: container.clientHeight,
+                top: 0
+            };
+            var bar = {
+                element: bar_element,
+                position: 0,
+                move: function (leftwards) {
+                    if (leftwards) {
+                        this.position-=10;
+                        if (this.position < 0) {
+                            this.position = 0;
+                        }
+                    } else {
+                        this.position+=10;
+                        if (this.position > (bounds.right - bar.element.clientWidth)) {
+                            this.position = bounds.right - bar.element.clientWidth;
+                        }
+                    }
+                    bar.element.style.left = bar.position + 'px';
+                }
+            };
+            var ball = {
+                element: ball_element,
+                position: {
+                    x: 0,
+                    y: 0
+                },
+                direction: {
+                    leftwards: true,
+                    towardstop: true
+                }
+            };
+
+            setInterval(function () {
+                if (ball.direction.towardstop) {
+                    ball.position.y-=5;
+                    if (ball.position.y < 0) {
+                        ball.position.y = 0;
+                        ball.direction.towardstop = false;
+                    }
+                } else {
+                    ball.position.y+=5;
+                    if (ball.position.y > (container.clientHeight - ball.element.clientHeight)) {
+                        //todo: check if the bar is at the ball location
+                        ball.position.y = container.clientHeight - ball.element.clientHeight;
+                        ball.direction.towardstop = true;
+                    }
+                }
+                if (ball.direction.leftwards) {
+                    ball.position.x-=5;
+                    if (ball.position.x < 0) {
+                        ball.position.x = 0;
+                        ball.direction.leftwards = false;
+                    }
+                } else {
+                    ball.position.x+=5;
+                    if (ball.position.x > (container.clientWidth - ball.element.clientWidth)) {
+                        ball.position.x = container.clientWidth - ball.element.clientWidth;
+                        ball.direction.leftwards = true;
+                    }
+                }
+                ball.element.style.top = ball.position.y + 'px';
+                ball.element.style.left = ball.position.x + 'px';
+            }, 10);
+
+
+            document.addEventListener('keydown', function (e) {
+                console.log(e.keyCode);
+                if (e.keyCode === 37) {
+                    bar.move(true);
+                } else if (e.keyCode === 39) {
+                    bar.move(false);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<input type="text"/>
+    <div class="container">
+        <div class="bar"></div>
+        <div class="ball"></div>
+    </div>
+</body>
+</html>
